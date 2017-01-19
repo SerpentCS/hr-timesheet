@@ -63,11 +63,29 @@ class HrTimesheetSheet(orm.Model):
 
     def _get_current_pay_period(self, cr, uid, context=None):
         period_obj = self.pool['hr.period']
+        contract_obj = self.pool.get('hr.contract')
         date_today = datetime.today().strftime('%Y-%m-%d')
-        period_ids = period_obj.search(cr, uid,
-                                       [('date_start', '<=', date_today),
-                                        ('date_stop', '>=', date_today)],
+        employee = self.default_get(cr, uid, ['employee_id'], context=None)
+        contract_id = contract_obj.search(cr, uid,
+                                          [('employee_id', '=',
+                                            employee.get('employee_id'))],
+                                          context=context)
+        contract = contract_obj.browse(cr, uid, contract_id[0],
                                        context=context)
+        if contract.schedule_pay:
+            period_ids = period_obj.search(cr, uid,
+                                           [('date_start', '<=', date_today),
+                                            ('date_stop', '>=', date_today),
+                                            ('schedule_pay', '=',
+                                             contract.schedule_pay),
+                                            ],
+                                           context=context)
+        else:
+            period_ids = period_obj.search(cr, uid,
+                                           [('date_start', '<=', date_today),
+                                            ('date_stop', '>=', date_today),
+                                            ],
+                                           context=context)
         if period_ids:
             return period_ids[0]
         else:

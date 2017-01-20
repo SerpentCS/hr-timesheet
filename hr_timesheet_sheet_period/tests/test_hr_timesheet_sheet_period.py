@@ -41,8 +41,8 @@ class TestHrTimesheetSheetPeriod(common.TransactionCase):
         self.date_stop = datetime.today().strftime('%Y-12-31')
         self.context = self.user_model.context_get(self.cr, self.uid)
         cr, uid, context = self.cr, self.uid, self.context
-        self.company_id = self.company_model.create(cr, uid, {
-                    'name': 'Test Company'}, context=context)
+        self.company_id = self.company_model.\
+            create(cr, uid, {'name': 'Test Company'}, context=context)
 
         self.user = self.data_model.get_object(cr, uid, 'base', 'user_root')
         fiscal_year = self.create_fiscal_year()
@@ -90,8 +90,6 @@ class TestHrTimesheetSheetPeriod(common.TransactionCase):
         self.assertEqual(self.hts.hr_period_id.date_start, self.hts.date_from)
         self.assertEqual(self.hts.hr_period_id.date_stop, self.hts.date_to)
         self.assertEqual(self.today_date.month, self.hts.hr_period_id.number)
-        self.assertRaises(
-                except_orm, self.timeheet_model.write,
-                self.cr, self.uid, [self.hts_id], {'date_to': '2015-12-31'},
-                context=self.context
-            )
+        self.assertRaises(except_orm, self.timeheet_model.write,
+                          self.cr, self.uid, [self.hts_id],
+                          {'date_to': '2015-12-31'}, context=self.context)

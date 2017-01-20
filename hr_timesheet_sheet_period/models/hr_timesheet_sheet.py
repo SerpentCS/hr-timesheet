@@ -70,12 +70,13 @@ class HrTimesheetSheet(orm.Model):
                                           [('employee_id', '=',
                                             employee.get('employee_id'))],
                                           context=context)
-        contract = contract_obj.browse(cr, uid, contract_id[0],
-                                       context=context)
         search_domain = [('date_start', '<=', date_today),
                          ('date_stop', '>=', date_today)]
-        if contract.schedule_pay:
-            search_domain += [('schedule_pay', '=', contract.schedule_pay)]
+        if contract_id:
+            contract = contract_obj.browse(cr, uid, contract_id[0],
+                                           context=context)
+            if contract.schedule_pay:
+                search_domain += [('schedule_pay', '=', contract.schedule_pay)]
         period_ids = period_obj.search(cr, uid, search_domain, context=context)
         if period_ids:
             return period_ids[0]

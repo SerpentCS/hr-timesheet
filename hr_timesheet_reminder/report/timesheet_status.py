@@ -50,8 +50,8 @@ class timesheet_status(report_sxw.rml_parse):
             objects, data, ids, report_type)
 
     def compute(self, objects):
-        """compute all datas and do all the calculations before to start the rml
-        rendering
+        """Compute all datas and do all the calculations before to start
+        the rml rendering
         - objects are companies
         """
         # init the data array
@@ -129,6 +129,7 @@ class timesheet_status(report_sxw.rml_parse):
                 result[p_index][employee.id] = self._compute_timesheet_status(
                     employee.id, period)
         return result
+
 
 report_sxw.report_sxw('report.timesheet.reminder.status', 'res.company',
                       'hr_timesheet_reminder/report/timesheet_status.rml',
